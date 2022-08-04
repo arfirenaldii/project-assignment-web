@@ -7,6 +7,9 @@ import {
 } from "@material-ui/core";
 import baseApi from "@utils/api";
 import PokemonCard from "@components/PokemonCard";
+import PokemonDialog from "@components/PokemonDialog";
+
+import { PokemonProvider } from "src/reducers/pokemon/context";
 
 const baseURL = 'https://pokeapi.co/api/v2/';
 
@@ -48,18 +51,18 @@ const PokemonList: FC = () => {
     };
 
     return (
-        <Container maxWidth="lg">
-            <Box component="div" m={10}>
-                <Typography>PokeDex</Typography>
-                <Typography>{`${pokemon.count} Pokemon`}</Typography>
-                <button onClick={() => handlePagination('prev')} disabled={loading || !pokemon.previous}>Prev</button>
-                <button onClick={() => handlePagination('next')} disabled={loading || !pokemon.next}>Next</button>
-                {/* {pokemonList} */}
-                {pokemon.results?.map((pokemon, index) =>
-                    <PokemonCard key={`${index}-${pokemon.name}`} id={pokemon.name} />
-                )}
-            </Box>
-        </Container>
+        <PokemonProvider>
+            <Container maxWidth="lg">
+                <Box component="div" m={10}>
+                    <Typography>PokeDex</Typography>
+                    <Typography>{`${pokemon.count} Pokemon`}</Typography>
+                    <button onClick={() => handlePagination('prev')} disabled={loading || !pokemon.previous}>Prev</button>
+                    <button onClick={() => handlePagination('next')} disabled={loading || !pokemon.next}>Next</button>
+                    {pokemonList}
+                    <PokemonDialog />
+                </Box>
+            </Container>
+        </PokemonProvider>
     );
 };
 

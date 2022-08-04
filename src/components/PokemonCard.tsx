@@ -6,10 +6,14 @@ import {
 } from "@material-ui/core";
 import baseApi from "@utils/api";
 
+import { usePokemon } from "src/reducers/pokemon/context";
+import { setPokemon, toggleDialog } from "src/reducers/pokemon/actions";
+
 const baseURL = 'https://pokeapi.co/api/v2/';
 
 function PokemonCard(props) {
-    const [pokemon, setPokemon] = useState('');
+    const { state, dispatch } = usePokemon();
+    const [pokemon, setPokemonState] = useState('');
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -19,14 +23,19 @@ function PokemonCard(props) {
     const getPokemon = async () => {
         const res = await baseApi(baseURL);
         const json = await res.get(`pokemon/${props.id}`);
-        setPokemon(json.data);
+        setPokemonState(json.data);
         setLoading(false);
+    };
+
+    const handleSetPokemon = () => {
+        dispatch(setPokemon(pokemon));
+        dispatch(toggleDialog());
     };
 
     if (loading) return <div>loading...</div>;
 
     return (
-        <Card variant="elevation" elevation={8}>
+        <Card variant="elevation" elevation={8} onClick={handleSetPokemon}>
             <CardContent>
                 <img
                     src={pokemon.sprites.other.dream_world.front_default}
